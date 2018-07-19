@@ -1,5 +1,6 @@
 ﻿using ATG.Sandbox.Domain;
 using ATG.Sandbox.Model;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -16,18 +17,19 @@ namespace ATG.Sandbox.Service
         
         private  string replyQueueName;
         private  EventingBasicConsumer consumer;
+        private IConfiguration configuration;
         
         
-        public QueueService()
+        public QueueService(IConfiguration configuration)
         {
-        
+            this.configuration = configuration;
         }
         public void AddOrderInQueue(Order order)
         {
             try
             {
 
-                using (IConnection connection = new ConnectionFactory() { HostName = "35.199.98.99", Port = 5672 }.CreateConnection())
+                using (IConnection connection = new ConnectionFactory() { HostName = configuration.GetSection("QueueAddress").Value, Port = int.Parse(configuration.GetSection("QueuePort").Value.ToString()) }.CreateConnection())
                 {
                     using (IModel channel = connection.CreateModel())
                     {
@@ -64,7 +66,7 @@ namespace ATG.Sandbox.Service
                         byte[] orderBuffer = Encoding.UTF8.GetBytes(jsonified);
                         channel.BasicPublish(
                             exchange: "",
-                            routingKey: "rpc_queue",
+                            routingKey: configuration.GetSection("QueueName").Value,
                             basicProperties: props,
                             body: orderBuffer);
 
