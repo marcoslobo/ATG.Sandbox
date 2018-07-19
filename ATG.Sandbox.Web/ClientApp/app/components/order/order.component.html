@@ -1,0 +1,55 @@
+<h1>Ordens</h1>
+
+<p>Envie Ordens de compra/venda para uma fila RabbitMQ</p>
+
+<div class="input-group mb-3">
+    <label class="radio-inline">
+        <input type="radio" [(ngModel)]="orderData.side" value="buy">Compra
+    </label>
+    <label class="radio-inline">
+        <input type="radio" [(ngModel)]="orderData.side" value="sell">Venda
+    </label>
+</div>
+
+<label for="basic-url">Símbolo</label>
+<div class="input-group mb-3">
+    <input type="text" [(ngModel)]="orderData.symbol" id="Symbol" class="form-control" maxlength="6" />
+
+</div>
+
+
+<label for="basic-url">Quantidade</label>
+<div class="input-group mb-3">
+    <input type="text" [(ngModel)]="orderData.quantity" id="Quantity" class="form-control"  />
+</div>
+
+<label for="basic-url">Preço</label>
+<div class="input-group mb-3">
+    <input [(ngModel)]="orderData.price"  id="Price" class="form-control" min="0" max="99" required type="number" />
+</div>
+
+<button (click)="addOrder()" class="btn btn-primary btn-sm">Incluir Ordem</button>
+
+
+<hr />
+<table class='table' *ngIf="orders">
+    <thead>
+        <tr>
+            <th>Lado</th>
+            <th>Quantidade</th>
+            <th>Símbolo</th>
+            <th>Preço</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let order of orders">
+            <td>{{ order.side }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.symbol }}</td>
+            <td>{{ order.price }}</td>
+            <td>{{ order.status }}</td>
+        </tr>
+    </tbody>
+</table>
+
